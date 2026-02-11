@@ -1,25 +1,38 @@
 import socket
+import time
 
-HOST = '127.0.0.1'
-PORT = 4000
+class Client:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self.socket = None
+        self.is_connected = False
+        self.max_message_size = 1024
 
-while True:
-    try:
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect((HOST, PORT))
-        print("Client connected")
-        break
-    except:
-        print("Server offline")
+    def connect(self):
+        while True:
+            try:
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.connect((self.host, self.port))
+                self.is_connected = True
+                print("Connected to server")
+                break
 
-while True:
-    msg = input("Your message: ")
-    client.send(msg.encode())
-    print("Message sent")
-    if msg == "exit":
-        break
-    data = client.recv(1024)
-    print("Server answered: ", data.decode())
+            except:
+                print("Server offline")
+                time.sleep(5)
 
-client.close()
-print("Client closed")
+    def disconnect(self):
+        if self.socket:
+            self.socket.close()
+        self.is_connected = False
+
+    def send(self, text):
+        self.socket.send(text.encode())
+
+    def receive(self):
+        data = self.socket.recv(self.max_message_size)
+        return data.decode()
+
+    def get_status(self):
+        return self.is_connected
