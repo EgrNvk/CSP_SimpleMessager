@@ -1,21 +1,14 @@
 from Server.Model.model_server import Server
+from Server.View.view_server import ServerView
+from Server.Controller.controller_server import ServerController
 
 HOST = '127.0.0.1'
 PORT = 4000
 
-
+view = ServerView(title="Server")
 server = Server(HOST, PORT)
-server.start()
-server.accept_client()
 
-while True:
-    msg=server.receive()
-    print("Client say: ", msg)
+controller = ServerController(view, server)
+controller.start()
 
-    if msg == "exit":
-        break
-
-    result=input("Server say: ")
-    server.send(result)
-
-server.stop()
+view.start()
