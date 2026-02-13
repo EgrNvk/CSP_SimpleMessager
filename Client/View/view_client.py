@@ -4,7 +4,7 @@ class ClientView:
     def __init__(self, title="Client"):
         self.root = tk.Tk()
         self.root.title(title)
-        self.root.geometry("300x300")
+        self.root.geometry("700x700")
 
         self.history = tk.Text(self.root, wrap="word", state="disabled")
         self.history.pack(fill="both", expand=True, padx=10, pady=10)
