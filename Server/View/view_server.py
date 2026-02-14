@@ -18,9 +18,26 @@ class ServerView:
         self.btn_send = tk.Button(bottom_frame, text="Відправити")
         self.btn_send.pack(side="right")
 
+        self.history.tag_config("client", foreground="blue")
+        self.history.tag_config("server", foreground="green")
+        self.history.tag_config("system", foreground="gray")
+
     def add_line(self, text):
         self.history.configure(state="normal")
-        self.history.insert("end", text + "\n")
+
+        tag = None
+        if text.startswith("Client: "):
+            tag = "client"
+        elif text.startswith("Server: "):
+            tag = "server"
+        elif text.startswith("SYSTEM: "):
+            tag = "system"
+
+        if tag:
+            self.history.insert("end", text + "\n", tag)
+        else:
+            self.history.insert("end", text + "\n")
+
         self.history.configure(state="disabled")
         self.history.see("end")
 
