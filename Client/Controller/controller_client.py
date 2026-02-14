@@ -42,12 +42,21 @@ class ClientController:
     def poll_receive(self):
         try:
             msg=self.client.receive()
+            if msg == "_offline_":
+                self.view.add_line("SYSTEM: Server disconnected")
+                self.running = False
+                self.view.btn_send.config(state="disabled")
+                self.client.disconnect()
+                self.view.root.after(1000, self.start)
+                return
             if msg:
                 self.view.add_line("Server: " + msg)
         except:
             pass
 
         self.view.root.after(50, self.poll_receive)
+
+
 
     def close(self):
         try:

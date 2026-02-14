@@ -9,6 +9,8 @@ class ServerController:
         self.running = False
         self.has_client = False
 
+        self.view.root.protocol("WM_DELETE_WINDOW", self.close)
+
     def start(self):
         try:
             if self.server.server_socket is None:
@@ -81,3 +83,14 @@ class ServerController:
 
 
         self.view.root.after(200, self.poll_accept)
+
+    def close(self):
+        self.running = False
+        try:
+            if self.server.client_socket:
+                self.server.send("_offline_")
+        except:
+            pass
+        self.server.disconnect_client()
+        self.server.stop()
+        self.view.root.destroy()
