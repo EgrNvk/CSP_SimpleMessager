@@ -10,6 +10,8 @@ class ClientController:
 
         self.running=False
 
+        self.view.root.protocol("WM_DELETE_WINDOW", self.close)
+
     def start(self):
         try:
             self.client.connect()
@@ -46,3 +48,18 @@ class ClientController:
             pass
 
         self.view.root.after(50, self.poll_receive)
+
+    def close(self):
+        try:
+            if self.client.socket:
+                self.client.send("_offline_")
+        except:
+            pass
+        try:
+            self.client.disconnect()
+        except:
+            pass
+        self.running = False
+        self.view.root.destroy()
+
+
